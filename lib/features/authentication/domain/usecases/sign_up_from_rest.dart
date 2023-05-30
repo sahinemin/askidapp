@@ -1,16 +1,15 @@
+import 'package:askidapp/core/error/failure.dart';
+import 'package:askidapp/core/usecases/usecase.dart';
+import 'package:askidapp/features/authentication/domain/entities/user_entity.dart';
+import 'package:askidapp/features/authentication/domain/repositories/authentication_repository.dart';
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failure.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/user_entity.dart';
-import '../repositories/authentication_repository.dart';
-
 class SignUpFromRest implements UseCase<UserEntity, Params> {
-  final AuthenticationRepository repository;
   SignUpFromRest(this.repository);
+  final AuthenticationRepository repository;
 
   @override
   Future<Either<Failure, UserEntity>> call(Params params) async {
-    return await repository.signUpWithEmail(params.email, params.password);
+    return repository.signUpWithEmail(params.email, params.password);
   }
 }

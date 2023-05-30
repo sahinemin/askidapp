@@ -1,27 +1,34 @@
+import 'package:askidapp/config/router/router.dart';
+import 'package:askidapp/config/theme/theme.dart';
+import 'package:askidapp/core/constants/constants.dart';
+import 'package:askidapp/features/authentication/presentation/cubit/authentication_cubit.dart';
+import 'package:askidapp/injection_container.dart' as di;
+import 'package:askidapp/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'core/router/app_router.dart';
-import 'core/theme/app_theme.dart';
-import 'features/authentication/data/datasources/user_authentication_rest_data_source.dart';
-import 'features/authentication/presentation/cubit/authentication_cubit.dart';
 
-void main() {
-  runApp(AskidaApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
+  runApp(const MyApp());
 }
 
-class AskidaApp extends StatelessWidget {
-  AskidaApp({super.key});
-  final _appRouter = AppRouter();
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          AuthenticationCubit(UserAuthenticationRestDataSourceImpl()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<AuthenticationCubit>(),
+        ),
+      ],
       child: MaterialApp.router(
-        title: 'Askida',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme().themeData,
-        routerConfig: _appRouter.config(),
+        title: AppConstants.appName,
+        theme: AppTheme().getLightTheme,
+        darkTheme: AppTheme().getDarkTheme,
+        routerConfig: AppRouter.routes,
       ),
     );
   }

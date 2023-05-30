@@ -16,10 +16,11 @@ class LoginLoading extends AuthenticationState {
 }
 
 class LoginSuccessfull extends AuthenticationState {
-  final UserEntityModel userEntityModel;
-  const LoginSuccessfull(this.userEntityModel) : super();
+  const LoginSuccessfull(this.userEntity) : super();
+  final UserEntity userEntity;
 }
 
 class LoginError extends AuthenticationState {
-  const LoginError() : super();
+  const LoginError(this.message) : super();
+  final String message;
 }

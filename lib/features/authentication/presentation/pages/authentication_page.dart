@@ -1,50 +1,48 @@
-import 'package:auto_route/annotations.dart';
+import 'package:askidapp/core/constants/authentication_padding.dart';
+import 'package:askidapp/features/authentication/presentation/cubit/authentication_cubit.dart';
+import 'package:askidapp/features/authentication/presentation/widgets/authentication_button.dart';
+import 'package:askidapp/features/authentication/presentation/widgets/authentication_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/authentication_padding.dart';
-import '../cubit/authentication_cubit.dart';
-import '../widgets/authentication_button.dart';
-import '../widgets/authentication_formfield.dart';
-
-@RoutePage()
 class AuthenticationPage extends StatelessWidget with AuthenticationPadding {
   AuthenticationPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
-  final _welcome = "Askıda Uygulamasına Hoşgeldiniz!";
-  final _emailLogin = "E-POSTA İLE GİRİŞ YAPIN ";
-  final _email = "E-Posta";
-  final _password = "Parola";
-  final _enterance = "Giriş";
-  final _or = "Veya";
+  final _welcome = 'Askıda Uygulamasına Hoşgeldiniz!';
+  final _emailLogin = 'E-POSTA İLE GİRİŞ YAPIN ';
+  final _email = 'E-Posta';
+  final _password = 'Parola';
+  final _enterance = 'Giriş';
+  final _or = 'Veya';
   //final _googleConnect = "Google İle Bağlan";
-  final _notSigned = "Kayıtlı Değilseniz. ";
-  final _signUp = "KAYIT OL";
+  final _notSigned = 'Kayıtlı Değilseniz. ';
+  final _signUp = 'KAYIT OL';
   late final AuthenticationCubit _loginCubit;
-
-  void _initializeLoginCubit(BuildContext context) {
-    _loginCubit = BlocProvider.of<AuthenticationCubit>(context);
-  }
 
   @override
   Widget build(BuildContext context) {
-    _initializeLoginCubit(context);
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(0), child: AppBar()),
+        preferredSize: const Size.fromHeight(0),
+        child: AppBar(),
+      ),
       body: BlocConsumer<AuthenticationCubit, AuthenticationState>(
         listener: (context, state) {
           if (state is LoginError) {
             ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text("Error")));
+                .showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is LoginSuccessfull) {
-            state.userEntityModel.email;
+            context.go('/home', extra: state.userEntity);
           }
         },
         builder: (context, state) {
           if (state is LoginInitial) {
+            _loginCubit = BlocProvider.of<AuthenticationCubit>(context);
+            return buildInitial(context);
+          } else if (state is LoginError) {
             return buildInitial(context);
           } else {
             return const CircularProgressIndicator();
@@ -82,7 +80,7 @@ class AuthenticationPage extends StatelessWidget with AuthenticationPadding {
             text: _enterance,
             color: Theme.of(context).primaryColor,
             onPressed: () async =>
-                _loginCubit.logInWithEmail("email", "password"),
+                _loginCubit.logInWithEmail('emin.sahin@gmail.com', '123456'),
           ),
           Padding(
             padding: paddingValue,
@@ -103,8 +101,8 @@ class AuthenticationPage extends StatelessWidget with AuthenticationPadding {
               children: [
                 Text(_notSigned),
                 TextButton(
-                  onPressed: () async =>
-                      _loginCubit.registerWithEmail("email", "password"),
+                  onPressed: null,
+                  //_loginCubit.registerWithEmail('email', 'password'),
                   style: Theme.of(context).textButtonTheme.style,
                   child: Text(_signUp),
                 )

@@ -1,8 +1,11 @@
 import 'dart:convert';
+
+import 'package:askidapp/core/decoder.dart';
 import 'package:askidapp/core/error/exception.dart';
+import 'package:askidapp/features/authentication/data/models/token_model.dart';
 import 'package:askidapp/features/authentication/data/models/user_entity_model.dart';
-import 'package:http/http.dart';
-import 'package:http/http.dart' as http;
+import 'package:askidapp/features/authentication/data/service/authentication_service.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 abstract class UserAuthenticationRestDataSource {
   Future<UserEntityModel> signInWithEmail(String email, String password);
@@ -11,31 +14,40 @@ abstract class UserAuthenticationRestDataSource {
 
 class UserAuthenticationRestDataSourceImpl
     implements UserAuthenticationRestDataSource {
-  late final Response response;
+  UserAuthenticationRestDataSourceImpl(this.authenticationService);
+
+  final AuthenticationService authenticationService;
 
   @override
   Future<UserEntityModel> signInWithEmail(String email, String password) async {
-    response = await http.get(
-      Uri.parse('http://localhost:8080/api/v1/login'),
-      headers: {'Content-Type': 'application/json'},
+    final response = await authenticationService.signIn(
+      json.encode(
+        {
+          'email': email,
+          'password': password,
+        },
+      ),
     );
-    if (response.statusCode == 200) {
-      return UserEntityModel.fromJson(json.decode(response.body));
+    if (response.isSuccessful) {
+      final token =
+          TokenModel.fromJson(Decoder.instance.jsonDecode(response.body!));
+      final decodedToken = JwtDecoder.decode(token.token!);
+      print(decodedToken);
+      return UserEntityModel(email: email, password: password);
     } else {
-      throw ServerException(response.statusCode.toString());
+      throw const ServerException();
     }
   }
 
   @override
   Future<UserEntityModel> signUpWithEmail(String email, String password) async {
-    response = await http.get(
-      Uri.parse('http://localhost:8080/api/v1/register'),
-      headers: {'Content-Type': 'application/json'},
-    );
-    if (response.statusCode == 200) {
-      return UserEntityModel.fromJson(json.decode(response.body));
+    final response = await authenticationService.signUp();
+    if (response.isSuccessful) {
+      return UserEntityModel.fromJson(
+        Decoder.instance.jsonDecode(response.body!),
+      );
     } else {
-      throw ServerException(response.statusCode.toString());
+      throw const ServerException();
     }
   }
 }
