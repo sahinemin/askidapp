@@ -15,7 +15,7 @@ final sl = GetIt.I;
 Future<void> init() async {
   sl
     ..registerFactory(
-      () => AuthenticationCubit(sl()),
+      () => AuthenticationCubit(sl(), sl()),
     )
     ..registerLazySingleton(() => SignInFromRest(sl()))
     ..registerLazySingleton(() => SignUpFromRest(sl()))

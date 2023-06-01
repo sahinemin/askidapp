@@ -8,10 +8,27 @@ abstract class UseCase<Type, Params> {
 }
 
 class Params extends Equatable {
-  const Params(this.email, this.password);
+  const Params(
+    this.email,
+    this.password,
+  );
   final String email;
   final String password;
 
   @override
   List<Object?> get props => [email, password];
+}
+
+class ParamsForRegister extends Params {
+  const ParamsForRegister(
+    this.firstName,
+    this.lastName,
+    super.email,
+    super.password,
+  );
+  final String firstName;
+  final String lastName;
+
+  @override
+  List<Object?> get props => [super.email, super.password, firstName, lastName];
 }

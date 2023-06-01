@@ -10,11 +10,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
-  runApp(const MyApp());
+  runApp(const AskidaApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class AskidaApp extends StatelessWidget {
+  const AskidaApp({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -20,6 +20,11 @@ class LoginSuccessfull extends AuthenticationState {
   final UserEntity userEntity;
 }
 
+class RegistrationSuccessfull extends AuthenticationState {
+  const RegistrationSuccessfull(this.userEntity) : super();
+  final UserEntity userEntity;
+}
+
 class LoginError extends AuthenticationState {
   const LoginError(this.message) : super();
   final String message;

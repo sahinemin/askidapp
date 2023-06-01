@@ -9,6 +9,8 @@ abstract class AuthenticationRepository {
     String password,
   );
   Future<Either<Failure, UserEntity>> signUpWithEmail(
+    String firstName,
+    String lastName,
     String email,
     String password,
   );

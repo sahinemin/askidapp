@@ -4,15 +4,20 @@ import 'package:flutter/services.dart';
 class AppTheme {
   final _lightTheme = ThemeData(
     brightness: Brightness.light,
-    primaryColor: Colors.orange,
+    primarySwatch: Colors.orange,
     canvasColor: Colors.white,
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         padding: const MaterialStatePropertyAll(EdgeInsets.zero),
         minimumSize: const MaterialStatePropertyAll(Size.zero),
         backgroundColor: const MaterialStatePropertyAll(Colors.white),
-        textStyle:
-            MaterialStatePropertyAll(TextStyle(foreground: Paint()..color)),
+        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.hovered)) {
+            return Colors.orange;
+          }
+          return Colors.black;
+        }),
       ),
     ),
     appBarTheme: const AppBarTheme(
@@ -21,9 +26,7 @@ class AppTheme {
       backgroundColor: Colors.transparent,
     ),
     inputDecorationTheme: const InputDecorationTheme(
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(width: 1.5),
-      ),
+      border: UnderlineInputBorder(),
     ),
   );
   final _darkTheme = ThemeData.dark();

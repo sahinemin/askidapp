@@ -9,7 +9,12 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 abstract class UserAuthenticationRestDataSource {
   Future<UserEntityModel> signInWithEmail(String email, String password);
-  Future<UserEntityModel> signUpWithEmail(String email, String password);
+  Future<UserEntityModel> signUpWithEmail(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+  );
 }
 
 class UserAuthenticationRestDataSourceImpl
@@ -40,12 +45,24 @@ class UserAuthenticationRestDataSourceImpl
   }
 
   @override
-  Future<UserEntityModel> signUpWithEmail(String email, String password) async {
-    final response = await authenticationService.signUp();
+  Future<UserEntityModel> signUpWithEmail(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+  ) async {
+    final response = await authenticationService.signUp(
+      json.encode(
+        {
+          'firstName': firstName,
+          'lastName': lastName,
+          'email': email,
+          'password': password,
+        },
+      ),
+    );
     if (response.isSuccessful) {
-      return UserEntityModel.fromJson(
-        Decoder.instance.jsonDecode(response.body!),
-      );
+      return UserEntityModel(email: email, password: password);
     } else {
       throw const ServerException();
     }

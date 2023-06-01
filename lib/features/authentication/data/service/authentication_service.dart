@@ -7,7 +7,7 @@ abstract class AuthenticationService extends ChopperService {
   static AuthenticationService create([ChopperClient? client]) =>
       _$AuthenticationService(client);
   @Post(path: '/sign-up')
-  Future<Response<String>> signUp();
+  Future<Response<String>> signUp(@Body() String body);
   @Post(path: '/sign-in')
   Future<Response<String>> signIn(@Body() String body);
 }

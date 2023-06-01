@@ -37,12 +37,21 @@ class RestAuthenticationReposityoryImpl implements AuthenticationRepository {
 
   @override
   Future<Either<Failure, UserEntity>> signUpWithEmail(
+    String firstName,
+    String lastName,
     String email,
     String password,
   ) async {
     if (await networkInfo.isConnected) {
       try {
-        return Right(await restAuthentication.signUpWithEmail(email, password));
+        return Right(
+          await restAuthentication.signUpWithEmail(
+            firstName,
+            lastName,
+            email,
+            password,
+          ),
+        );
       } on ServerException {
         return Left(ServerFailure());
       } on SocketException {

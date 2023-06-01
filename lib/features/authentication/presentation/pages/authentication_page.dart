@@ -1,7 +1,7 @@
 import 'package:askidapp/core/constants/authentication_padding.dart';
 import 'package:askidapp/features/authentication/presentation/cubit/authentication_cubit.dart';
 import 'package:askidapp/features/authentication/presentation/widgets/authentication_button.dart';
-import 'package:askidapp/features/authentication/presentation/widgets/authentication_formfield.dart';
+import 'package:askidapp/features/authentication/presentation/widgets/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -12,18 +12,31 @@ class AuthenticationPage extends StatelessWidget with AuthenticationPadding {
   });
 
   final _welcome = 'Askıda Uygulamasına Hoşgeldiniz!';
+
   final _emailLogin = 'E-POSTA İLE GİRİŞ YAPIN ';
+
   final _email = 'E-Posta';
+
   final _password = 'Parola';
+
   final _enterance = 'Giriş';
+
   final _or = 'Veya';
+
   //final _googleConnect = "Google İle Bağlan";
   final _notSigned = 'Kayıtlı Değilseniz. ';
+
   final _signUp = 'KAYIT OL';
+
   late final AuthenticationCubit _loginCubit;
+
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    _loginCubit = BlocProvider.of<AuthenticationCubit>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
@@ -40,7 +53,6 @@ class AuthenticationPage extends StatelessWidget with AuthenticationPadding {
         },
         builder: (context, state) {
           if (state is LoginInitial) {
-            _loginCubit = BlocProvider.of<AuthenticationCubit>(context);
             return buildInitial(context);
           } else if (state is LoginError) {
             return buildInitial(context);
@@ -68,19 +80,19 @@ class AuthenticationPage extends StatelessWidget with AuthenticationPadding {
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
-          AuthenticationFormField(
-            labelText: _email,
-            obscureText: false,
-          ),
-          AuthenticationFormField(
-            labelText: _password,
-            obscureText: true,
+          LoginForm(
+            paddingValue: paddingValue,
+            email: _email,
+            emailController: emailController,
+            password: _password,
+            passwordController: passwordController,
           ),
           AuthenticationButton(
             text: _enterance,
-            color: Theme.of(context).primaryColor,
-            onPressed: () async =>
-                _loginCubit.logInWithEmail('emin.sahin@gmail.com', '123456'),
+            onPressed: () async => _loginCubit.logInWithEmail(
+              emailController.text,
+              passwordController.text,
+            ),
           ),
           Padding(
             padding: paddingValue,
@@ -101,9 +113,7 @@ class AuthenticationPage extends StatelessWidget with AuthenticationPadding {
               children: [
                 Text(_notSigned),
                 TextButton(
-                  onPressed: null,
-                  //_loginCubit.registerWithEmail('email', 'password'),
-                  style: Theme.of(context).textButtonTheme.style,
+                  onPressed: () => context.push('/register'),
                   child: Text(_signUp),
                 )
               ],
